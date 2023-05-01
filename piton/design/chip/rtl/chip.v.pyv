@@ -1042,7 +1042,7 @@ module chip(
     tile0 (
         .clk                (clk_muxed),
         .rst_n              (rst_n_inter_sync),
-        .clk_en             (ctap_clk_en_inter[_FLAT_ID_] && clk_en_inter),
+        .clk_en             (/* ctap_clk_en_inter[_FLAT_ID_] always one in designbench */ 1'b1 && clk_en_inter),
         .default_chipid             (14'b0),    // the first chip
         .default_coreid_x           (COREIDX),
         .default_coreid_y           (COREIDY),

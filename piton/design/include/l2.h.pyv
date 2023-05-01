@@ -52,7 +52,7 @@ L2_NUM_SETS = int(L2_SIZE / (L2_LINE_SIZE * L2_WAYS))
 // Input buffer for pipeline1
 
 `define L2_P1_HEADER_BUF_IN_WIDTH       192
-`define L2_P1_DATA_BUF_IN_WIDTH         64
+//`define L2_P1_DATA_BUF_IN_WIDTH         64)
 
 `define L2_P1_HEADER_BUF_IN_FLITS       3
 `define L2_P1_DATA_BUF_IN_FLITS         1
@@ -267,6 +267,7 @@ print("`define L2_STATE_ARRAY_HEIGHT_LOG2     %d" % (math.log(L2_NUM_SETS,2)))
 `define L2_STATE_DATA           `L2_STATE_DATA_WIDTH-1:0
 
 
+`define L2_P1_DATA_BUF_IN_WIDTH         ((`L2_STATE_DATA_WIDTH) > 64 ? (`L2_STATE_DATA_WIDTH) : 64)
 //MSHR array
 
 `define L2_MSHR_ENTRIES         8
