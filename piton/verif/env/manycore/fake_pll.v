@@ -59,11 +59,11 @@ always @(posedge ref_clk)
 begin
     if (rst)
     begin
-        counter = 7'd0;
+        counter <= 7'd0;
     end
     else if (counter < 7'd100)
     begin
-        counter = counter + 1'b1;
+        counter <= counter + 1'b1;
     end
 end
 

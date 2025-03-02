@@ -43,6 +43,8 @@ import "DPI-C" function void report_pc (longint thread_pc);
 import "DPI-C" function void init_jbus_model_call(string str, int oram);
 `endif
 
+`undef VERILATOR
+
 `timescale 1ps/1ps
 module cmp_top (
 `ifdef VERILATOR
@@ -69,8 +71,8 @@ input                                 ok_iob
 
 `ifndef VERILATOR
 reg                             core_ref_clk;
-reg                             sys_rst_n;
-reg                             pll_rst_n;
+reg                             sys_rst_n = 1;
+reg                             pll_rst_n = 1;
 reg                             clk_en;
 reg                             pll_bypass;
 reg [4:0]                       pll_rangea;
@@ -98,7 +100,7 @@ reg                             passthru_clk_osc_n;
 reg                             passthru_chipset_clk_p;
 reg                             passthru_chipset_clk_n;
 
-reg                             jtag_rst_l;
+reg                             jtag_rst_l = 1;
 
 reg                             jtag_modesel;
 reg                             jtag_datain;
@@ -178,6 +180,11 @@ begin
     passthru_chipset_clk_n = 1'b1;
 
     // Resets are held low at start of boot
+    sys_rst_n = 1'b1;
+    jtag_rst_l = 1'b1;
+    pll_rst_n = 1'b1;
+
+    #1;
     sys_rst_n = 1'b0;
     jtag_rst_l = 1'b0;
     pll_rst_n = 1'b0;
@@ -486,7 +493,7 @@ system system(
 
 `ifndef VERILATOR
     // T1's TSO monitor, stripped of all L2 references
-    tso_mon tso_mon(`CHIP_INT_CLK, `CHIP.rst_n_inter_sync);
+    //tso_mon tso_mon(`CHIP_INT_CLK, `CHIP.rst_n_inter_sync);
 `endif
 
     // L15 MONITORS
@@ -566,6 +573,13 @@ system system(
             $display("UART: TX changed to %d at", tx, $time);
         end*/
 
+initial begin
+$dumpfile("dumpty.vcd");
+$dumpvars;
+end
+
 endmodule // cmp_top
 
 `endif
+
+`define VERILATOR 1

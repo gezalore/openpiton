@@ -45,20 +45,23 @@ static uintptr_t counters[NUM_COUNTERS];
 static char* counter_names[NUM_COUNTERS];
 
 
+void _madputc(char);
 
 // prints a cstring via the fake UART
 void printbuf(const char * buf, int buflen) {
   volatile char * uartAddr = (char*)PITON_UART_ADDRESS;
   for (int k=0; k < buflen; k++) {
-    // poll bit 5 of the LSR
-    while(!((*(uartAddr+5)) & 0x20));
-    (*uartAddr) = buf[k];
+    _madputc(buf[k]);
+    //// poll bit 5 of the LSR
+    //while(!((*(uartAddr+5)) & 0x20));
+    //(*uartAddr) = buf[k];
     if(buf[k]=='\n') break;
   }
   return;
 }
 
 // GOOD pass trap for the OpenPiton TB and pitonstream, do not modify the function name
+__attribute__((section(".text.pass")))
 void __attribute__((noreturn, noinline)) pass () {
 #ifdef PITONSTREAM  
   // only do this with pitonstream - otherwise this might block the core since the load does not return in HW
@@ -70,6 +73,7 @@ void __attribute__((noreturn, noinline)) pass () {
 }
 
 // BAD fail trap for the OpenPiton TB and pitonstream, do not modify the function name
+__attribute__((section(".text.fail")))
 void __attribute__((noreturn, noinline)) fail () {
 #ifdef PITONSTREAM  
   // only do this with pitonstream - otherwise this might block the core since the load does not return in HW
@@ -127,13 +131,6 @@ void printstr(const char* s)
   printbuf(s, strlen(s));
 }
 
-int __attribute__((weak)) main(int argc, char** argv)
-{
-  // single-threaded programs override this function.
-  printstr("Implement main(), foo!\n");
-  return -1;
-}
-
 static void init_tls()
 {
   register void* thread_pointer asm("tp");
@@ -145,32 +142,38 @@ static void init_tls()
   memset(thread_pointer + tdata_size, 0, tbss_size);
 }
 
+int piton_main(unsigned coreId, unsigned nCores);
+
+// volatile static uint32_t finish_sync0 = 0;
+// volatile static uint32_t finish_sync1 = 0;
 // always init all threads
 void _init(int cid, int nc)
 {
-  volatile static uint32_t finish_sync0 = 0;
-  volatile static uint32_t finish_sync1 = 0;
 
-  char num[2]   = {cid, nc};
-  char *argv[1] = {num};
-  int ret = main(2, argv);
+  //printf("%d %d\n", cid, nc);
 
-  ATOMIC_OP(finish_sync0, 1, add, w);
+  int ret = piton_main(cid, nc);
+
+  //ATOMIC_OP(finish_sync0, 1, add, w);
   //__asm__ __volatile__ (  " amoadd.w zero, %1, %0" : "+A" (finish_sync0) : "r" (1) : "memory");
-  while(finish_sync0 != nc);
+  //while(finish_sync0 != nc) {
+  //  printf("");
+  //}
 
   // synchronize for debug output below
-  while(finish_sync1 != cid);
+  //while(finish_sync1 != cid) {
+  //  printf("");
+  //}
 
-  char buf[NUM_COUNTERS * 32] __attribute__((aligned(64)));
-  char* pbuf = buf;
-  for (int i = 0; i < NUM_COUNTERS; i++)
-    if (counters[i])
-      pbuf += sprintf(pbuf, "core %d: %s = %d\n", cid, counter_names[i], counters[i]);
-  if (pbuf != buf)
-    printstr(buf);
+  //char buf[NUM_COUNTERS * 32] __attribute__((aligned(64)));
+  //char* pbuf = buf;
+  //for (int i = 0; i < NUM_COUNTERS; i++)
+  //  if (counters[i])
+  //    pbuf += sprintf(pbuf, "core %d: %s = %d\n", cid, counter_names[i], counters[i]);
+  //if (pbuf != buf)
+  //  printstr(buf);
 
-  ATOMIC_OP(finish_sync1, 1, add, w);
+  //ATOMIC_OP(finish_sync1, 1, add, w);
   //__asm__ __volatile__ (  " amoadd.w zero, %1, %0" : "+A" (finish_sync1) : "r" (1) : "memory");
 
   exit(ret);

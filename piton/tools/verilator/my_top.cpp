@@ -143,7 +143,7 @@ void reset_and_init() {
     std::cout << "Reset complete" << std::endl << std::flush;
 }
 
-int main(int argc, char **argv, char **env) {
+int foo_main(int argc, char **argv, char **env) {
 std::cout << "Started" << std::endl << std::flush;
 Verilated::commandArgs(argc, argv);
 top = new Vcmp_top;

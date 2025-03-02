@@ -26,6 +26,26 @@ SECTIONS
     *(.text.init)
   }
 
+  . = 0x80000200;
+  .text.pass : {
+    *(.text.pass)
+  }
+  . = 0x80000220;
+  .text.fail : {
+    *(.text.fail)
+  }
+
+  . = 0x80000400;
+  .text.madputc_table : {
+    *(.text.madputc_table)
+  }
+
+  . = 0x80000680;
+  .data.iterCount : {
+    *(.iterCount)
+  }
+
+  . = 0x80000700;
   .text : {
     *(.text)
   }

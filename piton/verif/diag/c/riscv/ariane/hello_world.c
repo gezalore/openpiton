@@ -15,13 +15,15 @@
 
 #include <stdio.h>
 
-int main(int argc, char ** argv) {
+__attribute__((section(".iterCount")))
+volatile int iterCount = 2;
 
-  for (int k = 0; k < 32; k++) {
-    // assemble number and print
-    printf("Hello world, I am HART %d! Counting (%d of 32)...\n", argv[0][0], k);
+int piton_main(unsigned coreId, unsigned nCores) {
+  const int N = iterCount;
+  printf("Hello world, I am HART %u of %u! Counting to %d...\n", coreId, nCores, N);
+  for (int k = 0; k < N; k++) {
+    printf("Count %d...\n", k);
   }
-
   printf("Done!\n");
 
   return 0;
