@@ -32,9 +32,9 @@
     import pyhplib
     from pyhplib import ReplicatePattern
     from pyhplib import ReplicatePattern1
+    from pyhplib import PITON_MAX_TILES_LOG2
 
-    MAX_TILE = pyhplib.MAX_TILE
-    print("`define MAX_TILE " + repr(MAX_TILE))
+    print("`define MAX_TILE " + repr(2**PITON_MAX_TILES_LOG2))
 %>
 
 

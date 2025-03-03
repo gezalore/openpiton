@@ -2767,6 +2767,13 @@ sub parse_args
   $ENV{PITON_X_TILES}=$pton_x_tiles;
   $ENV{PITON_Y_TILES}=$pton_y_tiles;
   $ENV{PITON_NUM_TILES}=$pton_num_tiles;
+
+  my $max_tiles_log2 = 1;
+  while (1<<$max_tiles_log2 < $pton_num_tiles) {
+    $max_tiles_log2 += 1;
+  }
+  $ENV{PITON_MAX_TILES_LOG2} = $max_tiles_log2;
+
   if($opt{dynamic_csm}) {
     $ENV{PITON_DYNAMIC_CSM}=$opt{dynamic_csm};
     push (@{$opt{midas_args}}, "-DDYNAMIC_CSM=$opt{dynamic_csm}");

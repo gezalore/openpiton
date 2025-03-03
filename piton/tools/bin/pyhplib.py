@@ -27,11 +27,6 @@ import os
 import math
 import xml.etree.ElementTree as ET
 
-#MAX_THREAD = 128;
-MAX_TILE = 64;
-MAX_X = 8;
-MAX_Y = 8;
-
 PITON_X_TILES = int(os.environ.get('PITON_X_TILES', '-1'))
 #print "//x_tiles:", num_tiles
 
@@ -41,22 +36,24 @@ PITON_Y_TILES = int(os.environ.get('PITON_Y_TILES', '-1'))
 PITON_NUM_TILES = int(os.environ.get('PITON_NUM_TILES', '-1'))
 #print "//num_tiles:", num_tiles
 
+PITON_MAX_TILES_LOG2 = int(os.environ.get('PITON_MAX_TILES_LOG2', '-1'))
+
 PITON_NETWORK_CONFIG = (os.environ.get("PITON_NETWORK_CONFIG", "2dmesh_config"))
 
 if PITON_X_TILES == -1:
     #print("//x_tiles not defined!")
-    PITON_X_TILES = MAX_X
+    raise RuntimeError("Need X size")
 
 if PITON_Y_TILES == -1:
     #print("//y_tiles not defined!")
-    PITON_Y_TILES = MAX_Y
+    raise RuntimeError("Need Y size")
 
 if PITON_NUM_TILES == -1:
     #print("//num_tile not defined!")
-    if PITON_X_TILES != -1 and PITON_Y_TILES != -1:
-        PITON_NUM_TILES = PITON_X_TILES*PITON_Y_TILES
-    else:
-        PITON_NUM_TILES = MAX_TILE
+    raise RuntimeError("Need X/Y size")
+
+if PITON_MAX_TILES_LOG2 == -1:
+    raise RuntimeError("Need max tiles log2")
 
 PITON_OST1     = int(os.environ.get('PITON_OST1', '0'))
 PITON_ARIANE   = int(os.environ.get('PITON_ARIANE', '0'))
@@ -159,7 +156,7 @@ def Replicate(text):
 #    return newtext;
 
 def ReplicatePattern(text, patterns):
-  regex = " ([^\.:]+)0"
+  regex = r" ([^\.:]+)0"
   newtext = ''
   for i in range(PITON_NUM_TILES):
     t = text
@@ -171,7 +168,7 @@ def ReplicatePattern(text, patterns):
 
 # only difference is that this looks for patterns start with 1 not 0
 def ReplicatePattern1(text, patterns):
-  regex = " ([^\.:]+)1"
+  regex = r" ([^\.:]+)1"
   newtext = ''
   for i in range(PITON_NUM_TILES):
     t = text

@@ -16,7 +16,7 @@
 #include <stdio.h>
 
 __attribute__((section(".iterCount")))
-volatile int iterCount = 2;
+volatile int iterCount = 1;
 
 int piton_main(unsigned coreId, unsigned nCores) {
   const int N = iterCount;
