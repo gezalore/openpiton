@@ -65,7 +65,6 @@ end
 
 // Reset code requested by Rudi
 // This is to turn off monitor during reset
-`ifndef VERILATOR
 reg     lsu_mon_rst_l;
 initial lsu_mon_rst_l = 0 ;
 
@@ -75,9 +74,6 @@ always @(posedge clk) begin
   while (rst_l !== 1) @(posedge clk) ;
   lsu_mon_rst_l = 1 ;
 end
-`else // ifndef VERILATOR
-wire lsu_mon_rst_l = rst_l;
-`endif // ifndef VERILATOR
 // End Reset code requested by Rudi
 
 // Enumerate monitors for all 8 cores
@@ -621,20 +617,7 @@ begin
 `else
     if (~`SPARC_CORE0.sparc0.ifu.fcl.running_e) begin
 `endif
-      `ifndef VERILATOR
-      force `SPARC_CORE0.sparc0.exu_lsu_ldst_va_e = 48'bx;
-      `else // ifndef VERILATOR
       `SPARC_CORE0.sparc0.exu_lsu_ldst_va_e = 48'bx;
-      `endif // ifndef VERILATOR
-    end
-`ifndef RTL_SPU
-    if (`SPARC_CORE0.sparc0.ifu.ifu.fcl.running_e) begin
-`else
-    if (`SPARC_CORE0.sparc0.ifu.fcl.running_e) begin
-`endif
-      `ifndef VERILATOR
-      release `SPARC_CORE0.sparc0.exu_lsu_ldst_va_e;
-      `endif // ifndef VERILATOR
     end
   end
 end

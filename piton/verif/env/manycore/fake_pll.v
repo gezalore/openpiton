@@ -42,19 +42,8 @@ reg [6:0] counter;
 // Bypass clock
 assign clk_out = ref_clk;
 
-// Non-synthesizeable locked logic
 // Starts out as 0 and changes to 1 100 ref_clk
 // cycles after falling edge of reset (deasserting reset)
-`ifndef VERILATOR
-initial
-begin
-    force clk_locked = 1'b0;
-    wait (rst == 1'b1);
-    wait (rst == 1'b0);
-    repeat(100)@(posedge ref_clk);
-    force clk_locked = 1'b1;
-end
-`else
 always @(posedge ref_clk)
 begin
     if (rst)
@@ -68,6 +57,5 @@ begin
 end
 
 assign clk_locked = counter == 7'd100;
-`endif
 
 endmodule

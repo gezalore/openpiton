@@ -1239,11 +1239,7 @@ end
 reg ifu_rstint_w;
 
 //grab warm and power reset.
-`ifndef VERILATOR
 always @(posedge rst_l or ifu_rstint_m)begin
-`else // ifndef VERILATOR
-always @(posedge rst_l or posedge ifu_rstint_m)begin
-`endif // ifndef VERILATOR
     if(rst_l)begin
         htickcmp_rst = 4'hf;
         stickcmp_rst = 4'hf;
@@ -1325,12 +1321,6 @@ initial begin
     softint_off      = 0;
     no_mmu_reg_cmp   = 0;
     mmu_fiveregs_off = 0;
-`ifndef VERILATOR
-    if($value$plusargs("softint_off=%h", softint_off))$display ("Info: softint option  %h", softint_off);
-    if($value$plusargs("no_mmu_reg_cmp=%h", no_mmu_reg_cmp))$display ("Info: no_mmu_reg_cmp option  %h", no_mmu_reg_cmp);
-    if($value$plusargs("mmu_fiveregs_off=%h", mmu_fiveregs_off))$display ("Info: mmu_fiveregs_off  %h", mmu_fiveregs_off);
-    if($value$plusargs("block_load_kill_off=%h", block_load_kill_off))$display ("Info: block_load_kill_off  %h", block_load_kill_off);
-`endif // ifndef VERILATOR
     store_delay_flush = 0;
     spec_load      = 0;
     pure_load      = 0;
@@ -2703,9 +2693,6 @@ assign  spc0_tcmp_cntl       = (|tickcmp_intdis_en_del);
 initial
 begin
     throw_pc_w      = 0;
-`ifndef VERILATOR
-    delay_spu       = 0;
-`endif // ifndef VERILATOR
     sft_vld0        = 0;
     sft_vld1        = 0;
     sft_vld2        = 0;
@@ -6105,11 +6092,7 @@ always @(posedge clk)begin
         delay_inst_vld[spc0_thread_pc]     <= fcl_fdp_inst_sel_nop_w_l;
         delay_inst_retract[spc0_thread_pc] <= retract_iferr_w;
         delay_inst_vld_w[spc0_thread_pc]   <= inst_vld_w;
-`ifndef VERILATOR
-        delay_spu[spc0_thread_pc]          <= spu_ldxa_w[spc0_thread_pc];
-`else // ifndef VERILATOR
         delay_spu[spc0_thread_pc]          <= 0;
-`endif // ifndef VERILATOR
     end
     prev_pc[spc0_thread_pc]  <= spc0_rtl_pc;
     prev_npc[spc0_thread_pc] <= spc0_rtl_npc;
@@ -6715,9 +6698,6 @@ task process_task;
         //------------------------------------------------------
 
         for(ind = 0;ind < 4; ind = ind + 1)begin
-`ifndef VERILATOR
-            if(delay_spu_done[ind])delay_spu[ind] = 0;
-`endif // ifndef VERILATOR
             delay_spu_done[ind] = 0;
 
         end
@@ -6843,9 +6823,6 @@ task process_task;
                 stepping[ind]   = 1'b1;
                 once_step[ind]  = 1'b1;
                 delay_done[ind] = 1'b0;
-`ifndef VERILATOR
-                delay_spu[ind]  = 0;
-`endif // ifndef VERILATOR
             end // if (spu_lsu_ldxa_illgl_va_w2 && spu_lsu_ldxa_data_vld_w2 && spu_delay)
             else begin
                 // $display("ttt: spc_trap_cntl");
@@ -6872,9 +6849,6 @@ task process_task;
                     stepping[ind]   = 1'b1;
                     once_step[ind]  = 1'b1;
                     delay_done[ind] = 1'b0;
-`ifndef VERILATOR
-                    delay_spu[ind]  = 0;
-`endif // ifndef VERILATOR
                     is_load[ind]    = 0;
                 end
             end
