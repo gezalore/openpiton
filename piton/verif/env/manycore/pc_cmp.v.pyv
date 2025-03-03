@@ -261,7 +261,7 @@ task trap_extract;
                     if($value$plusargs("good_trap{0}=%h", tmp_val)) begin
                         good_trap[{0}] = tmp_val;
                         good_trap_exists[{0}] = 1'b1;
-                        $display ("%t: good_trap %h", $time, good_trap[{0}]);
+                        //$display ("%t: good_trap %h", $time, good_trap[{0}]);
                     end"""
             print(good_string.format(i))
 %>
@@ -272,7 +272,7 @@ task trap_extract;
                     if($value$plusargs("bad_trap{0}=%h", tmp_val)) begin
                         bad_trap[{0}] = tmp_val;
                         bad_trap_exists[{0}] = 1'b1;
-                        $display ("%t: bad_trap %h", $time, bad_trap[{0}]);
+                        //$display ("%t: bad_trap %h", $time, bad_trap[{0}]);
                     end"""
             print(bad_string.format(i))
 %>

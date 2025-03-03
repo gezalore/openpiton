@@ -152,11 +152,11 @@ begin
    iob_buffer_flit1[`MSG_DST_X] = dest_x;
    iob_buffer_flit1[`MSG_DST_Y] = dest_y;
 
-   if (iob_buffer_val)
-   begin
-      $display("IOB sending to tile X:%d Y:%d", iob_buffer_flit1[`MSG_DST_X], iob_buffer_flit1[`MSG_DST_Y]);
-      $display("   raw tileid %x", fake_iob_out_data[49:18]);
-    end
+   //if (iob_buffer_val)
+   //begin
+   //   $display("IOB sending to tile X:%d Y:%d", iob_buffer_flit1[`MSG_DST_X], iob_buffer_flit1[`MSG_DST_Y]);
+   //   $display("   raw tileid %x", fake_iob_out_data[49:18]);
+   // end
 
    iob_buffer_data = {iob_buffer_flit1, iob_buffer_flit2};
 end
@@ -243,7 +243,7 @@ print(tt)
             fake_iob_out_data[95:64] = get_cpx_word(2);
             fake_iob_out_data[63:32] = get_cpx_word(3);
             fake_iob_out_data[31:0] = get_cpx_word(4);
-            $display("Doing IOB stuff - got values: %x %x %x %x %x", fake_iob_out_data[159:128], fake_iob_out_data[127:96], fake_iob_out_data[95:64], fake_iob_out_data[63:32], fake_iob_out_data[31:0]);
+            //$display("Doing IOB stuff - got values: %x %x %x %x %x", fake_iob_out_data[159:128], fake_iob_out_data[127:96], fake_iob_out_data[95:64], fake_iob_out_data[63:32], fake_iob_out_data[31:0]);
         end else begin
             fake_iob_out_data = {160{1'b0}};
         end
