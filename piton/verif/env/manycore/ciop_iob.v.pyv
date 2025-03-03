@@ -213,20 +213,6 @@ always @(negedge `CHIP.clk_muxed)
 begin
     if(ok_iob)
     begin
-        `ifndef PITON_DPI
-        $iob_cdriver(//input to pli
-            //cpx request from iob
-            fake_iob_out_data<%
-text = ''',
-            //pc event
-            spc0_inst_done_buf,
-            pc_w0_buf'''
-pattern = ["spc0", "pc_w0"]
-tt = ReplicatePattern(text, pattern)
-print(tt)
-%>
-        );
-        `else // ifndef PITON_DPI
             <%
 text = '''
         if (spc0_inst_done_buf) begin
@@ -247,7 +233,6 @@ print(tt)
         end else begin
             fake_iob_out_data = {160{1'b0}};
         end
-        `endif
 
         // a little error check
         if (iob_buffer_val && (out_buffer_val[out_write_index] | out_buffer_val[out_write_index + 1] == 1'b1))
