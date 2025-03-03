@@ -40,25 +40,9 @@
 extern volatile uint64_t tohost;
 extern volatile uint64_t fromhost;
 
-#define NUM_COUNTERS 2
-static uintptr_t counters[NUM_COUNTERS];
-static char* counter_names[NUM_COUNTERS];
 
+void _madputc(int);
 
-void _madputc(char);
-
-// prints a cstring via the fake UART
-void printbuf(const char * buf, int buflen) {
-  volatile char * uartAddr = (char*)PITON_UART_ADDRESS;
-  for (int k=0; k < buflen; k++) {
-    _madputc(buf[k]);
-    //// poll bit 5 of the LSR
-    //while(!((*(uartAddr+5)) & 0x20));
-    //(*uartAddr) = buf[k];
-    if(buf[k]=='\n') break;
-  }
-  return;
-}
 
 // GOOD pass trap for the OpenPiton TB and pitonstream, do not modify the function name
 __attribute__((section(".text.pass")))
@@ -82,22 +66,6 @@ void __attribute__((noreturn, noinline)) fail () {
   trap = *((unsigned long long *) PITON_TEST_BAD_END);
 #endif    
   while(1);
-}
-
-void setStats(int enable)
-{
-  int i = 0;
-#define READ_CTR(name) do { \
-    while (i >= NUM_COUNTERS) ; \
-    uintptr_t csr = read_csr(name); \
-    if (!enable) { csr -= counters[i]; counter_names[i] = #name; } \
-    counters[i++] = csr; \
-  } while (0)
-
-  READ_CTR(mcycle);
-  READ_CTR(minstret);
-
-#undef READ_CTR
 }
 
 void __attribute__((noreturn, noinline)) tohost_exit(uintptr_t code)
@@ -126,11 +94,6 @@ void __attribute__((noreturn, noinline)) abort()
   exit(128 + SIGABRT);
 }
 
-void printstr(const char* s)
-{
-  printbuf(s, strlen(s));
-}
-
 static void init_tls()
 {
   register void* thread_pointer asm("tp");
@@ -149,88 +112,11 @@ int piton_main(unsigned coreId, unsigned nCores);
 // always init all threads
 void _init(int cid, int nc)
 {
-
-  //printf("%d %d\n", cid, nc);
-
   int ret = piton_main(cid, nc);
-
-  //ATOMIC_OP(finish_sync0, 1, add, w);
-  //__asm__ __volatile__ (  " amoadd.w zero, %1, %0" : "+A" (finish_sync0) : "r" (1) : "memory");
-  //while(finish_sync0 != nc) {
-  //  printf("");
-  //}
-
-  // synchronize for debug output below
-  //while(finish_sync1 != cid) {
-  //  printf("");
-  //}
-
-  //char buf[NUM_COUNTERS * 32] __attribute__((aligned(64)));
-  //char* pbuf = buf;
-  //for (int i = 0; i < NUM_COUNTERS; i++)
-  //  if (counters[i])
-  //    pbuf += sprintf(pbuf, "core %d: %s = %d\n", cid, counter_names[i], counters[i]);
-  //if (pbuf != buf)
-  //  printstr(buf);
-
-  //ATOMIC_OP(finish_sync1, 1, add, w);
-  //__asm__ __volatile__ (  " amoadd.w zero, %1, %0" : "+A" (finish_sync1) : "r" (1) : "memory");
-
   exit(ret);
- 
-  // // only single-threaded programs should ever get here.
-  // if(nc!=1) {
-  //   return;
-  // }
-
-  // init_tls();
-
-  // char num[2]   = {cid, nc};
-  // char *argv[1] = {num};
-  // int ret = main(2, argv);
-
-  // char buf[NUM_COUNTERS * 32] __attribute__((aligned(64)));
-  // char* pbuf = buf;
-  // for (int i = 0; i < NUM_COUNTERS; i++)
-  //   if (counters[i])
-  //     pbuf += sprintf(pbuf, "%s = %d\n", counter_names[i], counters[i]);
-  // if (pbuf != buf)
-  //   printstr(buf);
-
-  // exit(ret);
 }
 
-#undef putchar
-int putchar(int ch)
-{
-  static __thread char buf[64] __attribute__((aligned(64)));
-  static __thread int buflen = 0;
-
-  buf[buflen++] = ch;
-
-  if (ch == '\n' || buflen == sizeof(buf))
-  {
-    printbuf(buf, buflen);
-    //syscall(SYS_write, 1, (uintptr_t)buf, buflen);
-    buflen = 0;
-  }
-
-  return 0;
-}
-
-void printhex(uint64_t x)
-{
-  char str[17];
-  int i;
-  for (i = 0; i < 16; i++)
-  {
-    str[15-i] = (x & 0xF) + ((x & 0xF) < 10 ? '0' : 'a'-10);
-    x >>= 4;
-  }
-  str[16] = 0;
-
-  printstr(str);
-}
+#define putchar _madputc
 
 static inline void printnum(void (*putch)(int, void**), void **putdat,
                     unsigned long long num, unsigned base, int width, int padc)

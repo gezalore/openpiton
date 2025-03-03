@@ -247,11 +247,11 @@ trap_entry:
 
   .globl _madputc
 _madputc:
-  andi a0, a0, 0xff
-  slli a0, a0, 1
-  la a1, _madputc_table
-  add a0, a0, a1
-  jr a0, 0
+  andi a1, a0, 0xff
+  slli a1, a1, 1
+  la a2, _madputc_table
+  add a1, a1, a2
+  jr a1, 0
 
   .section ".text.madputc_table"
 _madputc_table:
