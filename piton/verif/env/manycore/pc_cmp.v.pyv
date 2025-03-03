@@ -57,8 +57,8 @@ input rst_l;
     print("reg [31:0]     timeout [%d:0];" % (PITON_NUM_TILES*4-1))
 %>
 
-reg [39:0]    good_trap[`GOOD_TRAP_COUNTER-1:0];
-reg [39:0]    bad_trap [`GOOD_TRAP_COUNTER-1:0];
+reg [63:0]    good_trap[`GOOD_TRAP_COUNTER-1:0];
+reg [63:0]    bad_trap [`GOOD_TRAP_COUNTER-1:0];
 
 reg [`GOOD_TRAP_COUNTER-1:0] good_trap_exists;
 reg [`GOOD_TRAP_COUNTER-1:0] bad_trap_exists;
@@ -394,7 +394,7 @@ always @(posedge clk)begin
             print(outputStr.format(j, pc, i))
 
             for l in range(GOOD_TRAP_COUNTER):
-                outputStr = """if(good_trap_exists[{0}] & (good_trap[{0}] == {2}[39:0]))
+                outputStr = """if(good_trap_exists[{0}] & (good_trap[{0}] == {2}))
                         begin
                             if(good[{1}/4] == 0) begin
                                 $display("%016t hart %4d: @@@ Hit Good trap %4d/%0d", $time, {1} / 4, $countones(good), $bits(good));

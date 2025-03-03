@@ -38,7 +38,7 @@ module ciop_fake_iob(
 <%
 text = ''',
    input                spc0_inst_done,
-   input [48:0]         pc_w0
+   input [63:0]         pc_w0
 '''
 pattern = ["spc0", "pc_w0"]
 tt = ReplicatePattern(text, pattern)
@@ -140,8 +140,8 @@ end
 ///////////////////////////////////////////////////////////
 reg [63:0] iob_buffer_flit1;
 reg [63:0] iob_buffer_flit2;
-reg  [5:0] dest_x;
-reg  [5:0] dest_y;
+reg  [`NOC_X_WIDTH-1:0] dest_x;
+reg  [`NOC_Y_WIDTH-1:0] dest_y;
 always @ *
 begin
    iob_buffer_val = fake_iob_out_data[144];
@@ -190,7 +190,7 @@ end
 <%
 text = '''
 wire                             spc0_inst_done_buf  = spc0_inst_done;
-wire [48:0]                      pc_w0_buf           = pc_w0;
+wire [63:0]                      pc_w0_buf           = pc_w0;
 '''
 pattern = ["spc0", "pc_w0"]
 tt = ReplicatePattern(text, pattern)
@@ -216,7 +216,7 @@ begin
             <%
 text = '''
         if (spc0_inst_done_buf) begin
-            report_pc({{16{pc_w0_buf[39]}}, pc_w0_buf});
+            report_pc(pc_w0_buf);
         end'''
 pattern = ["spc0", "pc_w0"]
 tt = ReplicatePattern(text, pattern)
