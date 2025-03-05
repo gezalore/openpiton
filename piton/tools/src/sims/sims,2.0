@@ -2813,6 +2813,8 @@ sub parse_args
       push(@{$opt{config_rtl}}, "OST1_PLI_MRA_VAL") ;
   }
 
+  # Alwasys use MINIMAL_MONITORING
+  push(@{$opt{config_rtl}}, "MINIMAL_MONITORING");
 }
 
 ################################################################################
