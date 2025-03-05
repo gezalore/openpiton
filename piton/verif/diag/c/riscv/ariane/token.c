@@ -18,29 +18,34 @@
 #include <stdio.h>
 #include "util.h"
 
-// Synchronization variables, in separate cache lines
 __attribute__((aligned(64)))
-volatile int tokens[PITON_NUMTILES][16] = {1};
+typedef union {
+  uint32_t value;
+  char cache_line[64];
+} token_t;
+
+// Synchronization variables
+volatile token_t tokens[PITON_NUMTILES];
 
 __attribute__((section(".iterCount")))
-volatile int iterCount = 3;
+uint64_t iterCount = 2;
 
 int piton_main(unsigned coreId, unsigned nCores) {
   // synchronize with other cores and wait until it is this core's turn
-  volatile int* const selfTokenp= &tokens[coreId][0];
-  volatile int* const nextTokenp = &tokens[(coreId + 1) % PITON_NUMTILES][0];
+  volatile int* const selfTokenp= &tokens[coreId].value;
+  volatile int* const nextTokenp = &tokens[(coreId + 1) % PITON_NUMTILES].value;
 
-  const int iterations = iterCount;
+  if (coreId == 0) *selfTokenp = 1;
 
-  for (int n = 0; n < iterations; ++n) {
+  char msg[256];
+  sprintf(msg, "I have the token (%d of %d)\n", coreId, nCores);
+
+  const uint64_t iterations = iterCount;
+
+  for (uint64_t n = 0; n < iterations; ++n) {
     while(*selfTokenp != n + 1);
-
-    if (coreId == 0) printf("Iteration %0d\n", n);
-
-    // assemble number and print
-    printf("Hello, this is hart %d of %d!\n", coreId, nCores);
-
-    // increment atomic counter
+    if (coreId == 0) printf("Iteration %0u\n", (uint32_t)n);
+    printf(msg);
     __sync_fetch_and_add(nextTokenp, 1);
   }
 

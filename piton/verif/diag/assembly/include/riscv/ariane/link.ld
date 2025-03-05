@@ -27,12 +27,12 @@ SECTIONS
   }
 
   . = 0x80000200;
-  .text.pass : {
-    *(.text.pass)
-  }
-  . = 0x80000220;
   .text.fail : {
     *(.text.fail)
+  }
+  . = 0x80000220;
+  .text.pass : {
+    *(.text.pass)
   }
 
   . = 0x80000400;
