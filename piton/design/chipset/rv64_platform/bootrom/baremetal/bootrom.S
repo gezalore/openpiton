@@ -3,22 +3,24 @@
 .section .text.start, "ax", @progbits
 .globl _start
 _start:
-  li s0, DRAM_BASE
-  csrr a0, mhartid
-  la a1, _dtb
-  jr s0
+  #li a5, DRAM_BASE
+  #csrr a0, mhartid
+  #la a1, _dtb
+  c.li a0, 1
+  c.slli a0, 0x1f
+  jr a0
 
-.section .text.hang, "ax", @progbits
-.globl _hang
-_hang:
-  csrr a0, mhartid
-  la a1, _dtb
-1:
-  wfi
-  j 1b
-
-.section .rodata.dtb, "a", @progbits
-.globl _dtb
-.align 5, 0
-_dtb:
-.incbin "rv64_platform.dtb"
+#.section .text.hang, "ax", @progbits
+#.globl _hang
+#_hang:
+#  csrr a0, mhartid
+#  la a1, _dtb
+#1:
+#  wfi
+#  j 1b
+#
+#.section .rodata.dtb, "a", @progbits
+#.globl _dtb
+#.align 5, 0
+#_dtb:
+#.incbin "rv64_platform.dtb"
