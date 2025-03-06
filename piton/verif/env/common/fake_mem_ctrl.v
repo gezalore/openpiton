@@ -63,7 +63,17 @@ import "DPI-C" function void load_memory(input string str, input longint unsigne
 import "DPI-C" function longint unsigned read_word(input longint unsigned addr);
 import "DPI-C" function void write_word(input longint unsigned addr, input longint unsigned data);
 
-initial load_memory("mem.bin", 64'h8000_0000);
+initial begin
+  load_memory("mem.bin", 64'h8000_0000);
+  begin
+    bit [7:0][7:0] v = 1;
+    $value$plusargs("nCores=%d", v);
+    write_word(64'h8000_0680, {v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]});
+    if ($value$plusargs("iterations=%d", v)) begin
+      write_word(64'h8000_0688, {v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]});
+    end
+  end
+end
 
 reg mem_valid_in;
 reg [3*`NOC_DATA_WIDTH-1:0] mem_header_in;

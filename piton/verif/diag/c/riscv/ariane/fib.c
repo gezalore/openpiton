@@ -27,20 +27,20 @@ typedef union {
 } token_t;
 
 // Synchronization variables
-volatile token_t tokens[PITON_NUMTILES];
+volatile token_t tokens[1024];
 
 __attribute__((aligned(64)))
 volatile union {
   uint64_t value;
   char cache_line[64];
-} fib[PITON_NUMTILES];
+} fib[1024];
 
 __attribute__((section(".iterCount")))
 volatile uint64_t iterCount = 1;
 
-void waitToken(uint64_t index, uint64_t value) {
+void waitToken(uint64_t index, uint64_t nCores, uint64_t value) {
   if (index < 0) return;
-  if (index >= PITON_NUMTILES) return;
+  if (index >= nCores) return;
   while (tokens[index].value != value);
   return;
 }
@@ -51,8 +51,8 @@ int piton_main(int coreId, unsigned nCores) {
   if (coreId <= 1) tokens[coreId].value = 1;
 
   for (uint64_t n = 1; n <= iterations; ++n) {
-    waitToken(coreId - 2, n);
-    waitToken(coreId - 1, n);
+    waitToken(coreId - 2, nCores, n);
+    waitToken(coreId - 1, nCores, n);
 
     if (coreId == 0) printf("Starting iteration %0u\n", (uint32_t)(n-1));
 
@@ -70,8 +70,8 @@ int piton_main(int coreId, unsigned nCores) {
 
     printf("F(%0d)*%0d is %0llu\n", coreId, n, value);
 
-    waitToken(coreId + 1, n);
-    waitToken(coreId + 2, n);
+    waitToken(coreId + 1, nCores, n);
+    waitToken(coreId + 2, nCores, n);
   }
 
   return 0;

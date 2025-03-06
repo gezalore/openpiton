@@ -1657,6 +1657,7 @@ sub generic_sim_run
     }
 
     # convert -args to +args
+    push (@{$opt{sim_run_args}}, "+nCores=$ENV{PITON_NUM_TILES}");
     push (@{$opt{sim_run_args}}, "+finish_mask=$opt{finish_mask}") if ($opt{finish_mask} ne "") ;
     push (@{$opt{sim_run_args}}, "+TIMEOUT=$opt{rtl_timeout}") if ($opt{rtl_timeout}) ;
     push (@{$opt{sim_run_args}}, "+max_cycle=$opt{max_cycle}") if ($opt{max_cycle}) ;

@@ -25,15 +25,15 @@ typedef union {
 } token_t;
 
 // Synchronization variables
-volatile token_t tokens[PITON_NUMTILES];
+volatile token_t tokens[1024];
 
 __attribute__((section(".iterCount")))
-uint64_t iterCount = 2;
+uint64_t iterCount = 1;
 
 int piton_main(unsigned coreId, unsigned nCores) {
   // synchronize with other cores and wait until it is this core's turn
   volatile int* const selfTokenp= &tokens[coreId].value;
-  volatile int* const nextTokenp = &tokens[(coreId + 1) % PITON_NUMTILES].value;
+  volatile int* const nextTokenp = &tokens[(coreId + 1) % nCores].value;
 
   if (coreId == 0) *selfTokenp = 1;
 

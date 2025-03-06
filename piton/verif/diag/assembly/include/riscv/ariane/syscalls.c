@@ -107,12 +107,17 @@ static void init_tls()
 
 int piton_main(unsigned coreId, unsigned nCores);
 
+volatile extern const uint64_t _nCores;
+
 // volatile static uint32_t finish_sync0 = 0;
 // volatile static uint32_t finish_sync1 = 0;
 // always init all threads
-void _init(int cid, int nc)
+void _init(int cid)
 {
-  int ret = piton_main(cid, nc);
+  int nCores = (int)_nCores;
+  if (nCores > 1024) nCores = 1024;
+  if (cid >= nCores) exit(0);
+  int ret = piton_main(cid, nCores);
   exit(ret);
 }
 

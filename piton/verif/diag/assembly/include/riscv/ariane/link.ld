@@ -42,6 +42,7 @@ SECTIONS
 
   . = 0x80000680;
   .data.iterCount : {
+    *(.data.nCores)
     *(.iterCount)
   }
 
