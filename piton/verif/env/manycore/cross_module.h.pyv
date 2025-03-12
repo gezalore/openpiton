@@ -97,106 +97,12 @@ for i in range(PITON_NUM_TILES):
     printstring = """
     `define TILE%d            `CHIP.tile%d
     `define ARIANE_CORE%d     `TILE%d.g_ariane_core.core.ariane.i_cva6
-    `define SPARC_CORE%d      `TILE%d.g_sparc_core.core
-    `define PICO_CORE%d       `TILE%d.g_picorv32_core.core
-    `define CCX_TRANSDUCER%d  `TILE%d.g_sparc_core.ccx_l15_transducer
-    `define PICO_TRANSDUCER%d `TILE%d.g_picorv32_core.pico_l15_transducer
     `define L15_TOP%d         `TILE%d.l15.l15
     `define L15_PIPE%d        `TILE%d.l15.l15.pipeline
     `define DMBR%d            `TILE%d.dmbr_ins
     `define L2_TOP%d          `TILE%d.l2
-    `define SPARC_REG%d       `SPARC_CORE%d.sparc0.exu.exu.irf.irf
-`ifndef RTL_SPU
-    `define FLOATPATH%d       `SPARC_CORE%d.sparc0.ffu.ffu
-`else
-    `define FLOATPATH%d       `SPARC_CORE%d.sparc0.ffu
-`endif
-`ifndef RTL_SPU
-    `define TLUPATH%d         `SPARC_CORE%d.sparc0.tlu.tlu
-    `define DTLBPATH%d        `SPARC_CORE%d.sparc0.lsu.lsu.dtlb
-`else
-    `define TLUPATH%d         `SPARC_CORE%d.sparc0.tlu
-    `define DTLBPATH%d        `SPARC_CORE%d.sparc0.lsu.dtlb
-`endif
-`ifndef RTL_SPU
-    `define LSU_PATH sparc0.lsu.lsu
-`else
-    `define LSU_PATH sparc0.lsu
-`endif
-    `define PCXPATH%d         `SPARC_CORE%d.sparc0
-`ifndef RTL_SPU
-    `define ICVPATH%d         `SPARC_CORE%d.sparc0.ifu.ifu.icv
-    `define IFUPATH%d         `SPARC_CORE%d.sparc0.ifu.ifu
-    `define TNUM%dS           `SPARC_CORE%d.sparc0.ifu.ifu.swl
-    `define TPC%dS            `SPARC_CORE%d.sparc0.ifu.ifu.fdp
-`else
-    `define ICVPATH%d         `SPARC_CORE%d.sparc0.ifu.icv
-    `define IFUPATH%d         `SPARC_CORE%d.sparc0.ifu
-    `define TNUM%dS           `SPARC_CORE%d.sparc0.ifu.swl
-    `define TPC%dS            `SPARC_CORE%d.sparc0.ifu.fdp
-`endif
-`ifndef RTL_SPU
-    `define TDPPATH%d         `SPARC_CORE%d.sparc0.tlu.tlu.tdp
-`else
-    `define TDPPATH%d         `SPARC_CORE%d.sparc0.tlu.tdp
-`endif
-`ifndef RTL_SPU
-    `define DTUPATH%d         `SPARC_CORE%d.sparc0.ifu.ifu.fdp
-`else
-    `define DTUPATH%d         `SPARC_CORE%d.sparc0.ifu.fdp
-`endif
-    `define ALUPATH%d         `SPARC_CORE%d.sparc0.exu.exu.alu
-    `define SPCPATH%d         `SPARC_CORE%d.sparc0
-    `define REGPATH%d         `SPARC_CORE%d.sparc0.exu.exu.irf.irf
-    `define CCRPATH%d         `SPARC_CORE%d.sparc0.exu.exu.ecl.ccr
-    `define EXUPATH%d         `SPARC_CORE%d.sparc0.exu.exu
-`ifndef RTL_SPU
-    `define TLPATH%d          `SPARC_CORE%d.sparc0.tlu.tlu.tcl
-    `define TS0PATH%d         `SPARC_CORE%d.sparc0.tlu.tlu.tsa0
-    `define TS1PATH%d         `SPARC_CORE%d.sparc0.tlu.tlu.tsa1
-    `define INTPATH%d         `SPARC_CORE%d.sparc0.tlu.tlu.intdp
-    `define ASIPATH%d         `SPARC_CORE%d.sparc0.lsu.lsu.dctl
-    `define ASIDPPATH%d       `SPARC_CORE%d.sparc0.lsu.lsu.dctldp
-    `define ICTPATH%d         `SPARC_CORE%d.sparc0.ifu.ifu.ict
-    `define DCACHE%d          `SPARC_CORE%d.sparc0.lsu.lsu.dcache
-    `define INSTPATH%d        `SPARC_CORE%d.sparc0.ifu.ifu.fcl
-    `define PCPATH%d          `SPARC_CORE%d.sparc0.ifu.ifu
-    `define DVLD%d            `SPARC_CORE%d.sparc0.lsu.lsu.dva
-    `define DTAG%d            `SPARC_CORE%d.sparc0.lsu.lsu.dtag
-    `define SDTAG%d           `SPARC_CORE%d.sparc0.lsu.lsu.dtag
-    `define SDVLD%d           `SPARC_CORE%d.sparc0.lsu.lsu.dva
-    `define FFUPATH%d         `SPARC_CORE%d.sparc0.ffu.ffu
-    `define TLU_HYPER%d       `SPARC_CORE%d.sparc0.tlu.tlu.tlu_hyperv
-    `define IFQDP%d           `SPARC_CORE%d.sparc0.ifu.ifu.ifqdp
-    `define ITLBPATH%d        `SPARC_CORE%d.sparc0.ifu.ifu.itlb
-`else
-    `define TLPATH%d          `SPARC_CORE%d.sparc0.tlu.tcl
-    `define TS0PATH%d         `SPARC_CORE%d.sparc0.tlu.tsa0
-    `define TS1PATH%d         `SPARC_CORE%d.sparc0.tlu.tsa1
-    `define INTPATH%d         `SPARC_CORE%d.sparc0.tlu.intdp
-    `define ASIPATH%d         `SPARC_CORE%d.sparc0.lsu.dctl
-    `define ASIDPPATH%d       `SPARC_CORE%d.sparc0.lsu.dctldp
-    `define ICTPATH%d         `SPARC_CORE%d.sparc0.ifu.ict
-    `define DCACHE%d          `SPARC_CORE%d.sparc0.lsu.dcache
-    `define INSTPATH%d        `SPARC_CORE%d.sparc0.ifu.fcl
-    `define PCPATH%d          `SPARC_CORE%d.sparc0.ifu
-    `define DVLD%d            `SPARC_CORE%d.sparc0.lsu.dva
-    `define DTAG%d            `SPARC_CORE%d.sparc0.lsu.dtag
-    `define SDTAG%d           `SPARC_CORE%d.sparc0.lsu.dtag
-    `define SDVLD%d           `SPARC_CORE%d.sparc0.lsu.dva
-    `define FFUPATH%d         `SPARC_CORE%d.sparc0.ffu
-    `define TLU_HYPER%d       `SPARC_CORE%d.sparc0.tlu.tlu_hyperv
-    `define IFQDP%d           `SPARC_CORE%d.sparc0.ifu.ifqdp
-    `define ITLBPATH%d        `SPARC_CORE%d.sparc0.ifu.itlb
-`endif
-    `define CFG_ASI_PATH%d    `SPARC_CORE%d.sparc0.cfg_asi
-
     `define PITON_CORE%d_INST_DONE  `TOP_MOD.monitor.pc_cmp.spc%d_inst_done
-`ifdef RTL_SPARC%d
-    `define PITON_CORE%d_PC_W%d     `PCPATH%d.fdp.pc_w
-`else
     `define PITON_CORE%d_PC_W%d     `TOP_MOD.monitor.pc_cmp.spc%d_phy_pc_w
-`endif
 
     """
     printstring = printstring.replace("%d", str(i))
@@ -206,13 +112,6 @@ for i in range(PITON_NUM_TILES):
 `define ITAG0           `TOP_MOD.monitor.l_cache_mon0
 `define IVLD0           `TOP_MOD.monitor.l_cache_mon0
 `define SAS_INTER `TOP_MOD.sas_intf
-`ifndef RTL_SPU
-`define STNUM `SPARC_CORE0.sparc0.ifu.ifu.dtu.swl
-`define STPC  `SPARC_CORE0.sparc0.ifu.ifu.fdp
-`else
-`define STNUM `SPARC_CORE0.sparc0.ifu.dtu.swl
-`define STPC  `SPARC_CORE0.sparc0.ifu.fdp
-`endif
 `define MONITOR `TOP_MOD.monitor
 
 `endif

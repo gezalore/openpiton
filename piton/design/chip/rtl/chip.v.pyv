@@ -1038,7 +1038,7 @@ module chip(
     // Generate tile instances
 <%
     template = r'''
-    tile #(.TILE_TYPE(TYPE_OF_TILE))
+    tile
     tile0 (
         .clk                (clk_muxed),
         .rst_n              (rst_n_inter_sync),

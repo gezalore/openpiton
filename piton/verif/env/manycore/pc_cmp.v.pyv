@@ -186,17 +186,12 @@ initial begin
     //#20//need to wait for socket initializing.
      trap_extract;
     done    = 0;
-`ifdef PITON_OST1
-    active_thread = 0;
-`endif
     first_rst = 1;
     for(ind = 0;ind < `PITON_NUM_TILES; ind = ind + 1)timeout[ind] = 0;
 end // initial begin
 always @(posedge rst_l)begin
     if(first_rst)begin
-`ifndef PITON_OST1
         active_thread = 0;
-`endif
         first_rst     = 0;
         done          = 0;
     end
