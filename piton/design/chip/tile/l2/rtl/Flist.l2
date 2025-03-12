@@ -36,7 +36,7 @@ l2_decoder.v
 l2_dir.v
 l2_dir_wrap.v
 l2_encoder.v
-l2_mshr.v
+//l2_mshr.v
 l2_mshr_decoder.v
 l2_mshr_wrap.v 
 l2_pipe1.v

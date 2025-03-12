@@ -29,9 +29,9 @@
 // Should be empty
 // Left for compatibility
 // io_ctrl_top.v
-bram_map.v
-ciop_iob.v
-eth_top.v
+//bram_map.v
+//ciop_iob.v
+//eth_top.v
 // storage_addr_trans.v
 //uart_mux.v
 //uart_reader.v
