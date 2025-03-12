@@ -21,7 +21,6 @@
 // ========== Copyright Header End ============================================
 ////////////////////////////////////////////////////////
 
-`ifndef USE_TEST_TOP // don't compile if user wants to use deprecated TOPs
 `include "sys.h"
 `include "iop.h"
 `include "cross_module.tmp.h"
@@ -330,12 +329,5 @@ system system(
 
 `endif // DISABLE_ALL_MONITORS
 
-initial begin
-$dumpfile("dumpty.fst");
-$dumpvars;
-end
-
 endmodule // cmp_top
-
-`endif
 
